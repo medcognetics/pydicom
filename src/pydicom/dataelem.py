@@ -54,6 +54,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from pydicom.dataset import Dataset
 
 
+def _skip_conversion(val: Any) -> Any:
+    return val
+
+
 def empty_value_for_VR(
     VR: str | None, raw: bool = False
 ) -> bytes | list[str] | str | None | PersonName:
@@ -597,9 +601,6 @@ class DataElement:
         # e.g. LUT Descriptor is 'US or SS' and VM 3, but the first and
         #   third values are always US (the third should be <= 16, so SS is OK)
         if self.tag in _LUT_DESCRIPTOR_TAGS and val:
-
-            def _skip_conversion(val: Any) -> Any:
-                return val
 
             validate_value(VR_.US, val[0], self.validation_mode)
             for value in val[1:]:
